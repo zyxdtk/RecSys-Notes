@@ -1,6 +1,8 @@
 # RecSys-Notes
 记录推荐系统相关的优化经验、学习笔记、面试题。
 
+[TOC]
+
 ## 推荐系统适用场景
 信息过载+无明确意图
 
@@ -94,9 +96,17 @@
 - 样本调权
   - 见：[街首页推荐多目标优化之reweight实践：一把双刃剑？](https://zhuanlan.zhihu.com/p/271858727)
 - 线性加权。Score = a*scoreA + b * scoreB + c * ScoreC + … + m * ScoreM
-  - 人工调参
-  - 自动搜参
-- 乘法加权。一般用在电商场景 Score = pow(ctr, a) * pow(dur, b)
+  
+- 乘法加权。一般用在电商场景 Score = pow(ctr, a) * pow(price, b)
+  
+超参数搜索的方式[【知乎-哲哲】](https://zhuanlan.zhihu.com/p/304373868)：<span id="parameter-tuning"></span>
+- 人工调参(babysitting)
+- 网格搜索(Grid Search)
+- 随机搜索(Random Search)
+- 贝叶斯优化
+  - SMBO(Sequential model-based optimization)
+- 进化算法
+  - 帕累托 
 
 #### 特征
 ##### 非结构化特征的处理
@@ -123,8 +133,7 @@ NLP和CV的引入
 
 #### 模型
 
-##### 偏置处理
-位置偏置
+
 
 ##### 模型结构
 正则：L1、L2、Dropout、BatchNorm、Relu
@@ -132,8 +141,15 @@ NLP和CV的引入
 参数共享：gate、routing
 优化器：FTRL、Adagrad、Adam
 
+##### 偏置处理
+位置偏置
+
 ##### 多任务模型
 大部分推荐系统最终都会过渡到多目标排序，
+
+##### 调参
+
+[超参数搜索方法](#parameter-tuning)
 
 
 ### 策略优化
