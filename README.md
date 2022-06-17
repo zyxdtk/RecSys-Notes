@@ -27,9 +27,9 @@
     - [4.2.2. 排序的迭代路径](#422-排序的迭代路径)
     - [4.2.3. label](#423-label)
     - [4.2.4. 多目标融合](#424-多目标融合)
-    - [4.2.5. 非结构化特征的处理](#425-非结构化特征的处理)
     - [4.2.6. 特征工程](#426-特征工程)
-    - [4.2.7. 样本处理](#427-样本处理)
+    - [4.2.5. 非结构化特征的处理](#425-非结构化特征的处理)
+    - [4.2.7. 样本](#427-样本)
     - [4.2.8. 模型结构](#428-模型结构)
     - [4.2.9. 偏置处理](#429-偏置处理)
     - [4.2.10. 多任务模型](#4210-多任务模型)
@@ -168,10 +168,6 @@
 - [爱奇艺：多目标排序在爱奇艺短视频推荐中的应用](https://juejin.cn/post/6977633076390133796)
 - [快手：多目标排序在快手短视频推荐中的实践](http://www.360doc.com/content/21/0225/09/7673502_963854442.shtml)
 
-### 4.2.5. 非结构化特征的处理
-NLP和CV的引入
-视频、图片的自动打标。场景识别、人脸识别、OCR
-文本的关键词提取。
 
 ### 4.2.6. 特征工程
 - 主体维度
@@ -190,8 +186,31 @@ NLP和CV的引入
 - 批量特征
 - 实时特征
 
-### 4.2.7. 样本处理
-样本关联。如何处理延迟正样本。特征的离线在线不一致问题。
+### 4.2.5. 非结构化特征的处理
+NLP和CV的引入
+视频、图片的自动打标。场景识别、人脸识别、OCR
+文本的关键词提取。
+
+### 4.2.7. 样本
+样本=label+特征。
+label一般来自客户端的埋点，也有用到服务端数据的(比如，点赞、成单等数据服务端也有记录)。一般都会有多个label日志(曝光、点击、时长、点赞等)，需要把这些日志关联起来。特征来源于推荐埋点日志或离线批处理特征，最好是把特征都埋在推荐replay日志中，这样可以避免离线在线特征不一致问题。label埋点和推荐replay日志的关联可以通过约定的唯一性id来确定，如：user_id、item_id对，或者唯一性的session_id。
+
+label埋点日志关联，可以在客户端关联，也可以在大数据这里关联。为了减少客户端的复杂性，现在一般都是无代码埋点，只埋事件日志，然后由大数据这边关联。中间存在一些问题：
+- 日志丢失
+  - 客户端要做日志的持久化, 会导致日志延迟比较大，不过总比丢了好
+  - 日志回传要做好丢包重传等机制
+  - 服务端接收后一般是直接到kafka
+- user-itme粒度的日志回传事件跨度大
+  - 天级别批处理，要做好跨天的处理 
+  - 实时关联，一般设定cache时间窗口
+    - 负样本cache,[skip-above](https://tech.meituan.com/2016/04/21/online-learning.html)
+    - [负样本不cache](https://www.infoq.cn/article/lTHcDaZelZgC639P1P5q)，会有False Negative问题
+      - 样本重要性采样(importance sampling)
+      - FN矫正
+      - PU loss (Positive-unlabeled loss) 问题是来多个正样本怎么办
+      - 延迟反馈 Loss
+
+
 
 
 ### 4.2.8. 模型结构
@@ -257,17 +276,49 @@ NLP和CV的引入
 强化学习在推荐的应用：
 - 2018年 [Top-K Off-Policy Correction for a REINFORCE Recommender System](https://arxiv.org/abs/1812.02353)[【汉】](https://zhuanlan.zhihu.com/p/71601897) 据说获得了Youtube近两年单次上线的最高收益，看起来是召回阶段，召回的优化效果都这么牛逼！
   - [Intro to Policy Optimization](https://spinningup.openai.com/en/latest/spinningup/rl_intro3.html)
+  - 2015年 [Trust Region Policy Optimization](https://arxiv.org/abs/1502.05477)
 - 2019年 [Reinforcement Learning for Slate-based Recommender Systems: A Tractable Decomposition and Practical Methodology](https://arxiv.org/abs/1905.12767)[【汉】](https://zhuanlan.zhihu.com/p/83387560) 这个是用来排序的ctr*Q值
   - [sarsa 算法](https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-sarsa/) 
 - [Values of User Exploration in Recommender Systems](https://dl.acm.org/doi/pdf/10.1145/3460231.3474236) 评估探索对长期收益的影响。对比了两种探索的做法：Entropy Regularization 和 Intrinsic Motivation(其实就是对没见过的item加一个提权)。多样性和新颖性并不一定带来用户体验上升，并且过犹不及。惊喜度才是长期收益的关键。
   
 强化学习的资料：
 - [openai的强化学习课程](https://spinningup.openai.com/en/latest/)
+- [Facebook-朱哲清Bill 关于RL的研究进展的描述](https://www.zhihu.com/question/404471029/answer/2485186947)
 
 ## 5.2. 对item组合建模
 
 ## 5.3. 极致的时效性
 实时特征、实时模型、端上重排
+- 实时特征。这个最容易，时效性可以比模型高。
+- 实时模型
+  - [半实时](https://zhuanlan.zhihu.com/p/75597761)
+    - GBDT+LR
+    - Wide&Deep 
+  - 全实时。现在都有ps了，模型本身是可以实时训练的。这里有几个问题
+    - 模型的batch大小。为了凑齐batch最长等多久。
+    - 更新serving模型的实践间隔。一个是工程问题，大模型参数同步也要实践。另外一个是更新太快不一定有效果。对广告这种特别依赖id，且素材id更新非常频繁的，可能会比较有用。
+- 端上重排
+  - 阿里 [EdgeRec：边缘计算在推荐系统中的应用](https://mp.weixin.qq.com/s/O806chMT_BFzkA-Tuv94Hw) 
+  - 快手 [渠江涛：重排序在快手短视频推荐系统中的演进](https://mp.weixin.qq.com/s/OTyEbPCBh1NHogPM7bBtvA)
+
+
+实时优化器。本质上就是要加好正则，避免被少数样本带偏了
+  - FTRL(Follow The Regularized Leader)
+    - [Online Learning算法理论与实践](https://tech.meituan.com/online_learning.html) 主要介绍Online Learning的基本原理和两种常用的Online Learning算法：FTRL（Follow The Regularized Leader）和BPR（Bayesian Probit Regression）。基本原理理解，具体公式推导有点晕。
+    - [RDA， FTRL 在线学习算法最初的优化公式是依据什么得到的？](https://www.zhihu.com/question/266462198/answer/309780073)
+    - [在线学习（Online Learning）导读](https://zhuanlan.zhihu.com/p/36410780)
+    - [Online Learning and Online Convex Optimization](http://www.cs.huji.ac.il/~shais/papers/OLsurvey.pdf) 其中的2.3节讲到FTRL
+  - MIRA(Margin-infused relaxed algorithm)
+    - [浅谈在线机器学习算法](http://yjliu.net/blog/2012/07/14/a-brief-talk-about-online-learning.html) 提到了Perceptron算法用于二分类问题，MIRA算法用于多类问题。
+  - Online gradient descent: Logarithmic Regret Algorithms for Online Convex Optimization
+  - Dual averaging: Dual Averaging Methods for Regularized Stochastic Learning and Online Optimization
+  - Adagrad: Adaptive Subgradient Methods for Online Learning and Stochastic Optimization
+  - PA(Online Passive-Aggressive Algorithms)
+    - [Online Passive-Aggressive Algorithms](https://link.zhihu.com/?target=http%3A//www.jmlr.org/papers/volume7/crammer06a/crammer06a.pdf)  Shai Shalev-Shwartz于2006年发表，提出了一种基于边界的在线学习算法簇，可以支持多种预测任务。具体来说可以用于二分类、回归、多分类、序列预测等任务，使用hingeloss损失函数。
+    - [Online Learning：Theory, Algorithms, and Applications](http://ttic.uchicago.edu/~shai/papers/ShalevThesis07.pdf) Shai Shalev-Shwartz的博士论文，2007年发表，旨在建立一个支持多种预测任务的在线学习簇。
+  - 综述性文章
+    - [Online Learning and Stochastic Approximations](http://leon.bottou.org/publications/pdf/online-1998.pdf) L´eon Bottou，AT&T实验室，2018年修订版，在线学习和随机优化的解释文章。
+    - [Online Learning and Online Convex Optimization](http://www.cs.huji.ac.il/~shais/papers/OLsurvey.pdf) Shai Shalev-Shwartz于2011年写的一篇综述性论文
 
 ## 5.4. 更丰富的交互信息
 
