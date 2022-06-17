@@ -26,10 +26,10 @@
     - [4.2.1. 排序的评估](#421-排序的评估)
     - [4.2.2. 排序的迭代路径](#422-排序的迭代路径)
     - [4.2.3. label](#423-label)
-    - [4.2.4. 样本处理](#424-样本处理)
-    - [4.2.5. 多目标融合](#425-多目标融合)
-    - [4.2.6. 非结构化特征的处理](#426-非结构化特征的处理)
-    - [4.2.7. 特征工程](#427-特征工程)
+    - [4.2.4. 多目标融合](#424-多目标融合)
+    - [4.2.5. 非结构化特征的处理](#425-非结构化特征的处理)
+    - [4.2.6. 特征工程](#426-特征工程)
+    - [4.2.7. 样本处理](#427-样本处理)
     - [4.2.8. 模型结构](#428-模型结构)
     - [4.2.9. 偏置处理](#429-偏置处理)
     - [4.2.10. 多任务模型](#4210-多任务模型)
@@ -52,6 +52,16 @@
 信息过载+无明确意图
 
 # 3. 推荐系统从0到1
+在开始搭建推荐系统前，建议可以看看[Google的机器学习最佳实践(共43条)](https://developers.google.com/machine-learning/guides/rules-of-ml)[【汉】](https://www.jiqizhixin.com/articles/2018-05-22-12)。里面讲到进行机器学习的基本方法是：
+
+1. 确保机器学习流程从头到尾都稳固可靠。
+2. 从制定合理的目标开始。
+3. 以简单的方式添加常识性特征。
+4. 确保机器学习流程始终稳固可靠。
+  
+上述方法将在长时间内取得很好的效果。只要您仍然可以通过某种简单的技巧取得进展，就不应该偏离上述方法。增加复杂性会减缓未来版本的发布。
+
+
 从0到1就是要解决冷启动问题，冷启动问题可以用产品的办法解决，也可以在推荐系统内解决。
 
 ## 3.1. 冷启动
@@ -60,6 +70,9 @@
 ### 3.1.3. 新内容冷启动
 
 ## 3.2. 搭建推荐系统
+
+
+
 一个完整的推荐系统包括：数据采集、数据处理、推荐算法、评估体系。
 ### 3.2.1. 数据采集
 数据采集包括了：用户信息采集(人群属性、兴趣问卷)，用户行为数据采集(埋点日志)，推荐日志，内容打标。
@@ -98,8 +111,6 @@
 
 ## 4.2. 排序优化
 
-- [Google 的 Rules of ML(共43条)](https://developers.google.com/machine-learning/guides/rules-of-ml)[【汉】](https://www.jiqizhixin.com/articles/2018-05-22-12)
-
 ### 4.2.1. 排序的评估
 - 线上评估
   - ABtest。留存、时长、ctr、刷帖、点赞、评论、转发等
@@ -132,10 +143,8 @@
   - 总互动。总互动=DAU*匹配率*互动数。
   - item级别行为。曝光、点击、关注、互动 
 
-### 4.2.4. 样本处理
-样本关联。如何处理延迟正样本。特征的离线在线不一致问题。
 
-### 4.2.5. 多目标融合
+### 4.2.4. 多目标融合
 引入多目标的几种方式：
 - 样本调权
   - 见：[街首页推荐多目标优化之reweight实践：一把双刃剑？](https://zhuanlan.zhihu.com/p/271858727)
@@ -159,12 +168,12 @@
 - [爱奇艺：多目标排序在爱奇艺短视频推荐中的应用](https://juejin.cn/post/6977633076390133796)
 - [快手：多目标排序在快手短视频推荐中的实践](http://www.360doc.com/content/21/0225/09/7673502_963854442.shtml)
 
-### 4.2.6. 非结构化特征的处理
+### 4.2.5. 非结构化特征的处理
 NLP和CV的引入
 视频、图片的自动打标。场景识别、人脸识别、OCR
 文本的关键词提取。
 
-### 4.2.7. 特征工程
+### 4.2.6. 特征工程
 - 主体维度
   - 用户
     - 人群属性
@@ -180,6 +189,10 @@ NLP和CV的引入
 - 时效性维度
 - 批量特征
 - 实时特征
+
+### 4.2.7. 样本处理
+样本关联。如何处理延迟正样本。特征的离线在线不一致问题。
+
 
 ### 4.2.8. 模型结构
 正则：L1、L2、Dropout、BatchNorm、Relu
@@ -241,6 +254,15 @@ NLP和CV的引入
 # 5. 推荐系统的未来
 
 ## 5.1. 对长期收益建模
+强化学习在推荐的应用：
+- 2018年 [Top-K Off-Policy Correction for a REINFORCE Recommender System](https://arxiv.org/abs/1812.02353)[【汉】](https://zhuanlan.zhihu.com/p/71601897) 据说获得了Youtube近两年单次上线的最高收益，看起来是召回阶段，召回的优化效果都这么牛逼！
+  - [Intro to Policy Optimization](https://spinningup.openai.com/en/latest/spinningup/rl_intro3.html)
+- 2019年 [Reinforcement Learning for Slate-based Recommender Systems: A Tractable Decomposition and Practical Methodology](https://arxiv.org/abs/1905.12767)[【汉】](https://zhuanlan.zhihu.com/p/83387560) 这个是用来排序的ctr*Q值
+  - [sarsa 算法](https://mofanpy.com/tutorials/machine-learning/reinforcement-learning/intro-sarsa/) 
+- [Values of User Exploration in Recommender Systems](https://dl.acm.org/doi/pdf/10.1145/3460231.3474236) 评估探索对长期收益的影响。对比了两种探索的做法：Entropy Regularization 和 Intrinsic Motivation(其实就是对没见过的item加一个提权)。多样性和新颖性并不一定带来用户体验上升，并且过犹不及。惊喜度才是长期收益的关键。
+  
+强化学习的资料：
+- [openai的强化学习课程](https://spinningup.openai.com/en/latest/)
 
 ## 5.2. 对item组合建模
 
