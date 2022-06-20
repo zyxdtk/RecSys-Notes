@@ -30,7 +30,7 @@
     - [4.2.6. 特征工程](#426-特征工程)
     - [4.2.5. 非结构化特征的处理](#425-非结构化特征的处理)
     - [4.2.7. 样本](#427-样本)
-    - [4.2.8. 模型结构](#428-模型结构)
+    - [4.2.8. 模型](#428-模型)
     - [4.2.9. 偏置处理](#429-偏置处理)
     - [4.2.10. 多任务模型](#4210-多任务模型)
     - [4.2.11. 调参](#4211-调参)
@@ -213,11 +213,48 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
 
 
 
-### 4.2.8. 模型结构
+### 4.2.8. 模型
 正则：L1、L2、Dropout、BatchNorm、Relu
 序列建模：Attention、Transformer、GRU、LSTM
 参数共享：gate、routing
 优化器：FTRL、Adagrad、Adam
+
+树模型：
+- GBDT
+  - [GBDT（MART） 迭代决策树入门教程 | 简介](http://blog.csdn.net/w28971023/article/details/8240756)
+  - [GBDT：梯度提升决策树](http://www.jianshu.com/p/005a4e6ac775) 看过之后对gbdt原理有了大概了解，感觉还需要去了解决策树、adaboost、random forest、xgboost 这些东西。
+  - [机器学习算法总结--GBDT](http://blog.csdn.net/lc013/article/details/56667157) 
+- Xgboost
+  - [Introduction to Boosted Trees](https://xgboost.readthedocs.io/en/latest/model.html) 1.5h xgboost官网上对BT介绍文章，这个文章降低非常浅显易懂，首先摆出训练时的优化函数=偏差+复杂度，我们要在减少偏差和减少复杂度之间寻求平衡，先讲了CART的结构，然后讲BT是一步步添加树的，然后讲到每次添加一棵树的时候，是如何从众多树里面寻找到最好的那颗树，这里面就是刚刚说的优化函数。最后在讲了单颗的训练过程中也可以尽量去优化。感觉大致懂了，有时间再去深究里面的一些东西吧。  论文 [XGBoost: A Scalable Tree Boosting System](http://www.kdd.org/kdd2016/papers/files/rfp0697-chenAemb.pdf) 
+  - [xgboost 实战以及源代码分析](http://m.blog.csdn.net/u010159842/article/details/77503930)
+  - [xgboost_code_analysis](https://github.com/daoliker/xgboost_code_analysis)
+  - [XGboost核心源码阅读](http://mlnote.com/2016/10/29/xgboost-code-review-with-paper/)
+  - [DART booster](http://xgboost.apachecn.org/cn/latest/tutorials/dart.html) 在gbtree.cc中看到dart，特性就是通过drop树来解决over-fitting。但是预测会变慢，early-stop可能不稳定。
+    - [Dropout 解决 overfitting](https://morvanzhou.github.io/tutorials/machine-learning/tensorflow/5-02-dropout/)  简单搜了下，在NN中就是drop一些单元，属于一种正则化的手段。
+  - [Monotonic Constraints](https://xgboost.readthedocs.io/en/latest/tutorials/monotonic.html) 在模型训练中添加单调性约束
+  - 模型调参
+    - [xgboost参数](http://xgboost.readthedocs.io/en/latest/parameter.html)([汉](http://blog.sina.com.cn/s/blog_9132d85b0102w65l.html)) 这些参数不太懂：gamma 、 max_delta_step、colsample_bylevel、alpha、lambda、 b。 
+    个人理解所有的GB，学出来的都是tree，本质上就是用特征将目标进行分类。一颗树学习得太浅，所以会学出很多颗tree，然后加权到一起，这样可以学得更精细一点，可以对一个特征进行更多次切分，可以试验多种特征组合。 
+    然后由于用于训练的样本是有限的，训练样本级与实际总样本之间可能存在偏差，而我们学到的森林其实是对我们的样本集的统计学特性的模拟，和样本拟合得太匹配，就越容易拟合到其中的偏差部分。所以会通过控制树的深度、叶子节点的样本最小数量等控制精度，以免学得太过了。 
+    由于样本收集的时候可能存在一些不随机的部分，就是有偏差。我们在样本集的基础上，做一些处理，来消除这个不随机的部分。一种是随机的抽一部分样本（随机样本子集），一种是训练的时候只训练一部分特征（随机特征子集）。 
+    还有一种就是我们学习的时候，不要学得太像这个样本了，就是所谓的学习率调低一点，学习得更模糊一点。 
+    另一方面因为是GB，就是梯队推进，就是走一段路看一下调整方向，然后继续继续往前走一步。这个过程中，如果每次走的路短一点，就是增加了对齐方向的次数，就越不容易出现偏差，就不容易过拟合。 
+    如果样本集的正负样本数量差距太大，可能导致正样本被埋没了，所以有必要增加正样本的权重。
+    - [param_tuning](https://xgboost.readthedocs.io/en/latest/tutorials/param_tuning.html)
+    - [Notes on Parameter Tuning](https://xgboost.readthedocs.io/en/latest/how_to/param_tuning.html) 里面讲到几个调参的原则：理解样本偏差，控制过拟合，处理不平衡的数据集。  
+    - [论XGBOOST科学调参](https://zhuanlan.zhihu.com/p/25308120)
+    - [为什么xgboost/gbdt在调参时为什么树的深度很少就能达到很高的精度？](https://www.zhihu.com/question/45487317)
+    - [机器学习算法中GBDT和XGBOOST的区别有哪些？](https://www.zhihu.com/question/41354392)
+    - [xgboost如何使用MAE或MAPE作为目标函数?](https://zhuanlan.zhihu.com/p/34373008)
+    - [Xgboost-How to use “mae” as objective function?](https://stackoverflow.com/questions/45006341/xgboost-how-to-use-mae-as-objective-function)
+  - 模型分析
+    - [xgbfi](https://github.com/limexp/xgbfir)  xgboost特征交互和重要度。里面提到用Gain（特征增益）和Cover（分裂方向的概率）构造出期望增益ExpectedGain，相比于分裂次数更能体现特征的实际作用。另外考虑了如何评估多个特征之间的影响，就是计算一条路径的增益。不过工具还不完善，对评估指标本身也没有进行详细解释。
+    - [Understand your dataset with XGBoost](http://xgboost.readthedocs.io/en/latest/R-package/discoverYourData.html) xgboost提供了特征重要度工具，主要有gain和cover
+- LightGBM
+  - [如何看待微软新开源的LightGBM?](https://www.zhihu.com/question/51644470/answer/130946285)
+  - [LightGBM](https://github.com/Microsoft/LightGBM)
+  - [LightGBM 的中文文档](http://lightgbm.apachecn.org/cn/latest/index.html)
+
 
 ### 4.2.9. 偏置处理
 偏置的类型：
