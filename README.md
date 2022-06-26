@@ -1,5 +1,5 @@
 # 1. RecSys-Notes
-记录推荐系统相关的优化经验、学习笔记、面试题。
+记录推荐系统相关的优化经验、学习笔记。
 
 - [1. RecSys-Notes](#1-recsys-notes)
 - [2. 推荐系统适用场景](#2-推荐系统适用场景)
@@ -19,7 +19,7 @@
 - [4. 推荐系统优化](#4-推荐系统优化)
   - [4.1. 召回优化](#41-召回优化)
     - [4.1.1. 召回的评估](#411-召回的评估)
-    - [4.1.2. 召回的迭代路径](#412-召回的迭代路径)
+    - [4.1.2. 召回方法](#412-召回方法)
     - [4.1.3. 召回负样本处理](#413-召回负样本处理)
     - [4.1.4. 推荐历史去重](#414-推荐历史去重)
   - [4.2. 排序优化](#42-排序优化)
@@ -27,8 +27,8 @@
     - [4.2.2. 排序的迭代路径](#422-排序的迭代路径)
     - [4.2.3. label](#423-label)
     - [4.2.4. 多目标融合](#424-多目标融合)
-    - [4.2.6. 特征工程](#426-特征工程)
-    - [4.2.5. 非结构化特征的处理](#425-非结构化特征的处理)
+    - [4.2.5. 特征工程](#425-特征工程)
+    - [4.2.6. 非结构化特征的处理](#426-非结构化特征的处理)
     - [4.2.7. 样本](#427-样本)
     - [4.2.8. 模型](#428-模型)
     - [4.2.9. 偏置处理](#429-偏置处理)
@@ -47,6 +47,7 @@
   - [5.4. 更丰富的交互信息](#54-更丰富的交互信息)
   - [5.5. 与其他模块的协同](#55-与其他模块的协同)
   - [5.6. 自动化](#56-自动化)
+- [6. 参考资料](#6-参考资料)
 
 # 2. 推荐系统适用场景
 信息过载+无明确意图
@@ -70,10 +71,11 @@
 ### 3.1.3. 新内容冷启动
 
 ## 3.2. 搭建推荐系统
+一个完整的推荐系统包括：数据采集、数据处理、推荐算法、评估体系。下图把推荐系统的基本结构描述得非常清除了。
 
+![](static/recsys_jihoo_kim.jpg)
+来源：[jihoo-kim/awesome-RecSys](https://github.com/jihoo-kim/awesome-RecSys)
 
-
-一个完整的推荐系统包括：数据采集、数据处理、推荐算法、评估体系。
 ### 3.2.1. 数据采集
 数据采集包括了：用户信息采集(人群属性、兴趣问卷)，用户行为数据采集(埋点日志)，推荐日志，内容打标。
 
@@ -90,7 +92,6 @@
 #### 3.2.3.3. 策略
 黑白名单、调权、频控、打散、保量
 
-
 ### 3.2.4. 评估体系
 评估体系包括：在线评估（ABtest、报表）、离线评估。
 
@@ -101,9 +102,31 @@
 ### 4.1.1. 召回的评估
 召回率、准确率、hit率、内容覆盖度、基尼指数
 
-### 4.1.2. 召回的迭代路径
-多路召回。热门召回、关键词召回、i2i、u2i、模型召回。
-模型召回：DSSM、TDM
+### 4.1.2. 召回方法
+
+- 热门召回
+- 基于人群属性
+- 协同过滤
+- 基于向量
+  - 无监督 Graph Embedding
+    - 2014年 [DeepWalk: Online Learning of Social Representations](https://arxiv.org/pdf/1403.6652.pdf)][【汉】](https://zhuanlan.zhihu.com/p/45167021)  无权图+ random-walk + word2vec，学习网络结构，偏DFS
+    - 2015年 [LINE: Large-scale Information Network Embedding](https://arxiv.org/pdf/1503.03578.pdf)[【汉】](https://zhuanlan.zhihu.com/p/56478167) 二阶优化，Negative Sampling，alias负采样,偏BFS
+    - 2016年 [node2vec: Scalable Feature Learning for Networks](https://arxiv.org/pdf/1607.00653.pdf)[【汉】](https://zhuanlan.zhihu.com/p/56478167)，兼顾DFS和BFS
+    - 2018年 [Billion-scale Commodity Embedding for E-commerce Recommendation in Alibaba](https://arxiv.org/abs/1803.02349)[【汉】](http://felixzhao.cn/Articles/article/8) 引入side info，weight avg polling，
+  - 有监督
+    - 2013年 [DSSM](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/cikm2013_DSSM_fullversion.pdf)[【汉】](http://felixzhao.cn/Articles/article/4) 
+      - 论文用的 sample softmax 4个负样本
+      - 也可以用[triplet loss](https://zhuanlan.zhihu.com/p/136948465)  高内聚，低耦合
+    - 2016年 [DeepMatch:Deep Neural Networks for YouTube Recommendations](https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/45530.pdf)[【汉】](http://felixzhao.cn/Articles/article/15)
+      - 每个用户固定样本数量，避免高活用户带偏模型。加入样本年龄来消偏。ranking阶段用时长加权。
+      - serving的时候用ANN库，如Faiss、HNSW 
+    - 2018年 [TDM: Learning Tree-based Deep Model for Recommender Systems](https://arxiv.org/pdf/1801.02294.pdf)[【汉】](https://blog.csdn.net/XindiOntheWay/article/details/85220342) 利用品类信息初始化数，学到向量之后用k-means聚类
+    - 2019年 [MOBIUS: Towards the Next Generation of Query-Ad Matching in Baidu’s Sponsored Search](http://research.baidu.com/Public/uploads/5d12eca098d40.pdf)[【汉】](https://zhuanlan.zhihu.com/p/144765227) 广告召回兼顾相关性和CTR等业务指标。人工构造低相关高ctr的样本做为负样本。
+    - 2019年 [Deep Semantic Matching for Amazon Product Search](https://wsdm2019-dapa.github.io/slides/05-YiweiSong.pdf) 购买、曝光未购买、随机三类样本，商品这边用n-gram引入商品title然后和商品其他属性特征一起过nn得到商品的向量。把oov的n-gram hash到指定数量的bin里面。
+    - 2019年 [SDM: Sequential Deep Matching Model for Online Large-scale Recommender System](https://arxiv.org/pdf/1909.00385.pdf)[【汉】](http://felixzhao.cn/Articles/article/11) 短期兴趣是一个session内的行为，最多50个，用lstm + multi-head self-attention + user attention, 长期兴趣是7天，各种序列，先过atten，然后concat到一起。最后又搞了一个gate来融合长短期特征。就一个疑问：召回模型这么搞能训得动吗？
+
+
+
 
 ### 4.1.3. 召回负样本处理
 
@@ -123,6 +146,11 @@
     - 在推荐的整个留存打印debug信息，然后把debug信息放到debug工具中展示。
   - 模型debug 
     - TensorBoard 
+
+
+评估指标
+- [MAP](https://zhuanlan.zhihu.com/p/274563041) (Mean Average Precision)  
+- NDCG (Normalized Discounted Cumulative Gain)
 
 ### 4.2.2. 排序的迭代路径
 由一轮排序，到包含粗排、精排的两轮排序。甚至随着候选池的增加，可以增加更多轮排序。
@@ -169,7 +197,7 @@
 - [快手：多目标排序在快手短视频推荐中的实践](http://www.360doc.com/content/21/0225/09/7673502_963854442.shtml)
 
 
-### 4.2.6. 特征工程
+### 4.2.5. 特征工程
 - 主体维度
   - 用户
     - 人群属性
@@ -186,10 +214,35 @@
 - 批量特征
 - 实时特征
 
-### 4.2.5. 非结构化特征的处理
+特征的计算框架
+- 批量 
+  - Hive
+  - Spark 
+    -  [sparkInternals](https://github.com/JerryLead/SparkInternals/tree/master/markdown) github上的一个讲spark原理的项目，强烈推荐
+    -  [Spark Overview](http://spark.apache.org/docs/latest/) spark官方文档，太多了，偶尔看看
+    -  [Spark的使用及源码走读](http://www.cnblogs.com/hseagle/category/569175.html) 牛人的spark笔记，mark，还没看
+    -  [Tuning Spark](https://spark.apache.org/docs/latest/tuning.html)
+- 实时 
+  - Storm
+  - Flink 
+
+### 4.2.6. 非结构化特征的处理
 NLP和CV的引入
 视频、图片的自动打标。场景识别、人脸识别、OCR
 文本的关键词提取。
+
+- Glove
+  - [NLP模型笔记】GloVe模型简介](https://blog.csdn.net/edogawachia/article/details/105804378) 相比起绝对地描述一个词语，通过与第三者的比较，得到第三者与两个词语中的哪个更接近这样一个相对的关系，来表达词语的含义，实际上更符合我们对于语言的认知。这样学习出来的vector space具有一个meaningful substructure。
+- Word2Vec
+  - [dav-word2vec](https://github.com/dav/word2vec) google的word2vec
+  - [通俗理解word2vec](https://www.jianshu.com/p/471d9bfbd72f)
+- Transformer 
+  - [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+- [BERT(Bidirectional Encoder Representations from Transformers)](https://github.com/google-research/bert/) 上下文相关的表达，采用底层的双向编码，预训练与调优
+    - [【NLP】彻底搞懂BERT](https://www.cnblogs.com/rucwxb/p/10277217.html) 
+    - [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/abs/1810.04805)
+    - [BERT代码解读(3)-输出](https://www.jianshu.com/p/683b133310a6)
+    
 
 ### 4.2.7. 样本
 样本=label+特征。
@@ -224,13 +277,13 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
   - [GBDT（MART） 迭代决策树入门教程 | 简介](http://blog.csdn.net/w28971023/article/details/8240756)
   - [GBDT：梯度提升决策树](http://www.jianshu.com/p/005a4e6ac775) 看过之后对gbdt原理有了大概了解，感觉还需要去了解决策树、adaboost、random forest、xgboost 这些东西。
   - [机器学习算法总结--GBDT](http://blog.csdn.net/lc013/article/details/56667157) 
-- Xgboost
-  - [Introduction to Boosted Trees](https://xgboost.readthedocs.io/en/latest/model.html) 1.5h xgboost官网上对BT介绍文章，这个文章降低非常浅显易懂，首先摆出训练时的优化函数=偏差+复杂度，我们要在减少偏差和减少复杂度之间寻求平衡，先讲了CART的结构，然后讲BT是一步步添加树的，然后讲到每次添加一棵树的时候，是如何从众多树里面寻找到最好的那颗树，这里面就是刚刚说的优化函数。最后在讲了单颗的训练过程中也可以尽量去优化。感觉大致懂了，有时间再去深究里面的一些东西吧。  论文 [XGBoost: A Scalable Tree Boosting System](http://www.kdd.org/kdd2016/papers/files/rfp0697-chenAemb.pdf) 
+- [Xgboost](https://github.com/dmlc/xgboost)
+  - [Introduction to Boosted Trees](https://xgboost.readthedocs.io/en/stable/tutorials/model.html) 1.5h xgboost官网上对BT介绍文章，这个文章降低非常浅显易懂，首先摆出训练时的优化函数=偏差+复杂度，我们要在减少偏差和减少复杂度之间寻求平衡，先讲了CART的结构，然后讲BT是一步步添加树的，然后讲到每次添加一棵树的时候，是如何从众多树里面寻找到最好的那颗树，这里面就是刚刚说的优化函数。最后在讲了单颗的训练过程中也可以尽量去优化。感觉大致懂了，有时间再去深究里面的一些东西吧。  论文 [XGBoost: A Scalable Tree Boosting System](http://www.kdd.org/kdd2016/papers/files/rfp0697-chenAemb.pdf) 
   - [xgboost 实战以及源代码分析](http://m.blog.csdn.net/u010159842/article/details/77503930)
   - [xgboost_code_analysis](https://github.com/daoliker/xgboost_code_analysis)
   - [XGboost核心源码阅读](http://mlnote.com/2016/10/29/xgboost-code-review-with-paper/)
   - [DART booster](http://xgboost.apachecn.org/cn/latest/tutorials/dart.html) 在gbtree.cc中看到dart，特性就是通过drop树来解决over-fitting。但是预测会变慢，early-stop可能不稳定。
-    - [Dropout 解决 overfitting](https://morvanzhou.github.io/tutorials/machine-learning/tensorflow/5-02-dropout/)  简单搜了下，在NN中就是drop一些单元，属于一种正则化的手段。
+    - [Dropout 解决 overfitting](https://www.jianshu.com/p/b5e93fa01385)  简单搜了下，在NN中就是drop一些单元，属于一种正则化的手段。
   - [Monotonic Constraints](https://xgboost.readthedocs.io/en/latest/tutorials/monotonic.html) 在模型训练中添加单调性约束
   - 模型调参
     - [xgboost参数](http://xgboost.readthedocs.io/en/latest/parameter.html)([汉](http://blog.sina.com.cn/s/blog_9132d85b0102w65l.html)) 这些参数不太懂：gamma 、 max_delta_step、colsample_bylevel、alpha、lambda、 b。 
@@ -240,8 +293,7 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
     还有一种就是我们学习的时候，不要学得太像这个样本了，就是所谓的学习率调低一点，学习得更模糊一点。 
     另一方面因为是GB，就是梯队推进，就是走一段路看一下调整方向，然后继续继续往前走一步。这个过程中，如果每次走的路短一点，就是增加了对齐方向的次数，就越不容易出现偏差，就不容易过拟合。 
     如果样本集的正负样本数量差距太大，可能导致正样本被埋没了，所以有必要增加正样本的权重。
-    - [param_tuning](https://xgboost.readthedocs.io/en/latest/tutorials/param_tuning.html)
-    - [Notes on Parameter Tuning](https://xgboost.readthedocs.io/en/latest/how_to/param_tuning.html) 里面讲到几个调参的原则：理解样本偏差，控制过拟合，处理不平衡的数据集。  
+    - [param_tuning](https://xgboost.readthedocs.io/en/latest/tutorials/param_tuning.html) 理解样本偏差，控制过拟合，处理不平衡的数据集。  
     - [论XGBOOST科学调参](https://zhuanlan.zhihu.com/p/25308120)
     - [为什么xgboost/gbdt在调参时为什么树的深度很少就能达到很高的精度？](https://www.zhihu.com/question/45487317)
     - [机器学习算法中GBDT和XGBOOST的区别有哪些？](https://www.zhihu.com/question/41354392)
@@ -250,9 +302,8 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
   - 模型分析
     - [xgbfi](https://github.com/limexp/xgbfir)  xgboost特征交互和重要度。里面提到用Gain（特征增益）和Cover（分裂方向的概率）构造出期望增益ExpectedGain，相比于分裂次数更能体现特征的实际作用。另外考虑了如何评估多个特征之间的影响，就是计算一条路径的增益。不过工具还不完善，对评估指标本身也没有进行详细解释。
     - [Understand your dataset with XGBoost](http://xgboost.readthedocs.io/en/latest/R-package/discoverYourData.html) xgboost提供了特征重要度工具，主要有gain和cover
-- LightGBM
+- [LightGBM](https://github.com/Microsoft/LightGBM)
   - [如何看待微软新开源的LightGBM?](https://www.zhihu.com/question/51644470/answer/130946285)
-  - [LightGBM](https://github.com/Microsoft/LightGBM)
   - [LightGBM 的中文文档](http://lightgbm.apachecn.org/cn/latest/index.html)
 
 
@@ -366,4 +417,6 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
 减少人工干预
 
 
+# 6. 参考资料
 
+- [zhaozhiyong19890102/Recommender-System](https://github.com/zhaozhiyong19890102/Recommender-System)
