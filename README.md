@@ -124,6 +124,7 @@
     - 2019年 [MOBIUS: Towards the Next Generation of Query-Ad Matching in Baidu’s Sponsored Search](http://research.baidu.com/Public/uploads/5d12eca098d40.pdf)[【汉】](https://zhuanlan.zhihu.com/p/144765227) 广告召回兼顾相关性和CTR等业务指标。人工构造低相关高ctr的样本做为负样本。
     - 2019年 [Deep Semantic Matching for Amazon Product Search](https://wsdm2019-dapa.github.io/slides/05-YiweiSong.pdf) 购买、曝光未购买、随机三类样本，商品这边用n-gram引入商品title然后和商品其他属性特征一起过nn得到商品的向量。把oov的n-gram hash到指定数量的bin里面。
     - 2019年 [SDM: Sequential Deep Matching Model for Online Large-scale Recommender System](https://arxiv.org/pdf/1909.00385.pdf)[【汉】](http://felixzhao.cn/Articles/article/11) 短期兴趣是一个session内的行为，最多50个，用lstm + multi-head self-attention + user attention, 长期兴趣是7天，各种序列，先过atten，然后concat到一起。最后又搞了一个gate来融合长短期特征。就一个疑问：召回模型这么搞能训得动吗？
+    - 2020年 [Deep Retrieval: Learning A Retrievable Structure for Large-Scale Recommendations](https://arxiv.org/pdf/2007.07203.pdf)[【汉】](https://zhuanlan.zhihu.com/p/260453374)
 
 
 
