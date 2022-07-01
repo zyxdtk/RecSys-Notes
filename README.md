@@ -81,6 +81,17 @@
 - 排序。冷启动阶段最好是用单目标简单模型，把整个流程跑通。
 - 策略。黑白名单、调权、频控、打散、保量
 
+有一些开源的推荐系统框架(2022-07-01更新star数)：
+- [13.5k] [microsoft/recommenders](https://github.com/microsoft/recommenders)
+- [6.2k] [shenweichen/DeepCTR](https://github.com/shenweichen/DeepCTR) 兼容tf1和tf2 
+  - [2k] [shenweichen/DeepCTR-Torch(https://github.com/shenweichen/DeepCTR-Torch) pytorch版本
+- [5.9k] [gorse-io/gorse](https://github.com/gorse-io/gorse) 用go实现的推荐系统
+- [3.1k] [PaddlePaddle/PaddleRec](https://github.com/PaddlePaddle/PaddleRec) 百度开源，基于PaddlePaddle
+- [1.3k] [tensorflow/recommenders](https://github.com/tensorflow/recommenders)
+- [1k] [pytorch/torchrec](https://github.com/pytorch/torchrec) 
+- [0.6k] [alibaba/EasyRec](https://github.com/alibaba/EasyRec) 兼容TF1.12-1.15 / TF2.x / PAI-TF
+
+
 ### 3.2.4. 评估体系
 评估体系包括：在线评估（ABtest、报表）、离线评估。
 
@@ -453,3 +464,5 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
 # 6. 参考资料
 
 - [zhaozhiyong19890102/Recommender-System](https://github.com/zhaozhiyong19890102/Recommender-System)
+- [shenweichen/AlgoNotes](https://github.com/shenweichen/AlgoNotes)
+- [jihoo-kim/awesome-RecSys](https://github.com/jihoo-kim/awesome-RecSys)
