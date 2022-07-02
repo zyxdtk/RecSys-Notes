@@ -136,8 +136,28 @@
     - [2021] [Embedding based Product Retrieval in Taobao Search](https://arxiv.org/pdf/2106.09297.pdf)[【汉】](https://zhuanlan.zhihu.com/p/410331760) 双塔，把用户侧搞得特别复杂，有query(query用n-gram,transormer等各种放方法处理)，有用户行为序列(实时、短期、长期)，有lstm，transformer、attention等来处理序列。
     - [2021] [Pre-trained Language Model for Web-scale Retrieval in Baidu Search](https://arxiv.org/pdf/2106.03373.pdf)[【汉】](https://blog.csdn.net/Kaiyuan_sjtu/article/details/119770178)
 
+构建item向量索引：
+- 向量索引的方法
+  - 树，如KDtree
+  - hash，如LSH
+  - 聚类倒排，倒排里面有PCA降维，PQ降精度
+  - 图算法,如NSW
+- 开源向量索引库(2022-07-02更新star数)
+  - [17.3k] [faiss](https://github.com/facebookresearch/faiss) 支持billion级别向量索引
+    - [faiss原理（Product Quantization）](https://zhuanlan.zhihu.com/p/534004381)  IVFPQ，支持L2和内积
+    - [Billion-scale similarity search with GPUs](https://arxiv.org/pdf/1702.08734.pdf)
+  - [11.2k] [milvus](https://github.com/milvus-io/milvus) 已经是一个数据库了
+    - [architecture_overview](https://milvus.io/docs/architecture_overview.md) 
+    - [前所未有的 Milvus 源码架构解析](https://zhuanlan.zhihu.com/p/473617910)
+  - [10k] [annoy](https://github.com/spotify/annoy) 支持 欧氏距离，曼哈顿距离，余弦距离，汉明距离或点(内)乘积距离
+    - [一文带你了解Annoy！](https://zhuanlan.zhihu.com/p/109633593) 
+  - [2k] [hnswlib](https://github.com/nmslib/hnswlib) 支持L2、内积、cos等距离方法
+    - [Bithack/go-hnsw](https://github.com/Bithack/go-hnsw) 
+    - [ANN召回算法之HNSW](https://zhuanlan.zhihu.com/p/379372268)
+  - [1.4K] [vearch](https://github.com/vearch/vearch) 京东开源
+  - [24k] [google-research/tree/master/scann](https://github.com/google-research/google-research/tree/master/scann)
 
-
+参考: [几款多模态向量检索引擎：Faiss 、milvus、Proxima、vearch、Jina等](https://zhuanlan.zhihu.com/p/364923722)
 
 ### 4.1.3. 召回负样本处理
 
@@ -308,6 +328,9 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
   - [如何看待微软新开源的LightGBM?](https://www.zhihu.com/question/51644470/answer/130946285)
   - [LightGBM 的中文文档](http://lightgbm.apachecn.org/cn/latest/index.html)
 
+
+![](static/dnn_model.png)
+来源：[从算法到工程，推荐系统全面总结](https://www.infoq.cn/article/qeawCIJQfrycQpueaqs4)
 
 从LR到DNN模型：
 - [2007] [Predicting clicks: estimating the click-through rate for new ads](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/predictingclicks.pdf) LR算法应用于CTR问题
