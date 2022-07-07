@@ -26,7 +26,6 @@
     - [4.2.4. 样本](#424-样本)
     - [4.2.5. 模型](#425-模型)
     - [4.2.6. 偏置处理](#426-偏置处理)
-    - [4.2.7. 调参](#427-调参)
   - [4.3. 策略优化](#43-策略优化)
     - [4.3.1. 打造生态：消费者、生产者、平台三方利益兼顾](#431-打造生态消费者生产者平台三方利益兼顾)
     - [4.3.2. 流量扶持：新内容、新生产者、新品类](#432-流量扶持新内容新生产者新品类)
@@ -39,8 +38,8 @@
   - [5.3. 极致的时效性](#53-极致的时效性)
   - [5.4. 更丰富的交互信息](#54-更丰富的交互信息)
   - [5.5. 与其他模块的协同](#55-与其他模块的协同)
-  - [5.6. 自动化](#56-自动化)
-- [6. 参考资料](#6-参考资料)
+  - [5.6. 自动化AutoML](#56-自动化automl)
+- [6. 学习资源](#6-学习资源)
 
 # 2. 推荐系统适用场景
 信息过载+无明确意图
@@ -205,18 +204,6 @@
 - 线性加权。Score = a*scoreA + b * scoreB + c * ScoreC + … + m * ScoreM
 - 乘法加权。一般用在电商场景 Score = pow(ctr+ai, bi) * pow(price+aj, bj)
   
-[超参数搜索的方式](https://zhuanlan.zhihu.com/p/304373868)：<span id="parameter-tuning"></span>
-- 人工调参(babysitting)
-- 网格搜索(Grid Search)
-- 随机搜索(Random Search)
-- 贝叶斯优化
-  - [SMBO](https://zhuanlan.zhihu.com/p/53826787)(Sequential model-based optimization)
-- 进化算法
-  - 基础理论：[帕累托最优](https://zhuanlan.zhihu.com/p/54691447) 
-  - [CEM](https://blog.csdn.net/ppp8300885/article/details/80567682)(Cross Entropy Method)
-  - [PSO](https://cloud.tencent.com/developer/article/1424756)(Particle Swarm Optimization, 粒子群算法)
-  - [NES](https://mofanpy.com/tutorials/machine-learning/evolutionary-algorithm/evolution-strategy-natural-evolution-strategy/)(Natural Evolution Strategy)
-
 业界的一些多目标融合的实践：
 - [BIGO | 内容流多目标排序优化](https://toutiao.io/posts/ds6kdac/preview)
 - [爱奇艺：多目标排序在爱奇艺短视频推荐中的应用](https://juejin.cn/post/6977633076390133796)
@@ -252,20 +239,20 @@
   - Storm
   - Flink 
 
-另外也可以通过NLP和CV的能力，给视频、图片的自动打标。做好场景识别、人脸识别、OCR、文本的关键词提取等。
-
-- Glove
-  - [NLP模型笔记】GloVe模型简介](https://blog.csdn.net/edogawachia/article/details/105804378) 相比起绝对地描述一个词语，通过与第三者的比较，得到第三者与两个词语中的哪个更接近这样一个相对的关系，来表达词语的含义，实际上更符合我们对于语言的认知。这样学习出来的vector space具有一个meaningful substructure。
-- Word2Vec
-  - [dav-word2vec](https://github.com/dav/word2vec) google的word2vec
-  - [通俗理解word2vec](https://www.jianshu.com/p/471d9bfbd72f)
-- Transformer 
-  - [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
-- [BERT(Bidirectional Encoder Representations from Transformers)](https://github.com/google-research/bert/) 上下文相关的表达，采用底层的双向编码，预训练与调优
+内容理解。通过NLP和CV的能力，给视频、图片的自动打标。做好场景识别、人脸识别、OCR、文本的关键词提取等。
+NLP相关：
+- Glove [NLP模型笔记】GloVe模型简介](https://blog.csdn.net/edogawachia/article/details/105804378) 相比起绝对地描述一个词语，通过与第三者的比较，得到第三者与两个词语中的哪个更接近这样一个相对的关系，来表达词语的含义，实际上更符合我们对于语言的认知。这样学习出来的vector space具有一个meaningful substructure。
+- [dav-word2vec](https://github.com/dav/word2vec) [【汉】](https://www.jianshu.com/p/471d9bfbd72f) google的word2vec
+- [2016] [Bag of Tricks for Efficient Text Classification](https://arxiv.org/pdf/1607.01759.pdf)[【汉】](https://blog.51cto.com/u_13933750/3229465)  facebook开源的FastText，char-level n-gram,
+- [2017] [Attention Is All You Need](https://arxiv.org/abs/1706.03762) Transformer
+- [2018] [BERT(Bidirectional Encoder Representations from Transformers)](https://github.com/google-research/bert/) 上下文相关的表达，采用底层的双向编码，预训练与调优
     - [【NLP】彻底搞懂BERT](https://www.cnblogs.com/rucwxb/p/10277217.html) 
     - [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/abs/1810.04805)
     - [BERT代码解读(3)-输出](https://www.jianshu.com/p/683b133310a6)
     
+CV相关
+- [PaddleVideo](https://github.com/PaddlePaddle/PaddleVideo)
+
 
 ### 4.2.4. 样本
 样本=label+特征。
@@ -365,6 +352,11 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
 - [2020] [COLD: Towards the Next Generation of Pre-Ranking System](https://arxiv.org/abs/2007.16122v1)[【汉】](https://cloud.tencent.com/developer/article/1677703) 长期以来，粗排（pre-ranking）一直被认为是精排（ranking）的简化版本，这就导致系统会陷入局部最优，文中提出COLD同时优化粗排模型和计算效率
 
 
+模型引入图像特征：
+- [2017] [Visual Search at eBay](https://arxiv.org/pdf/1706.03154.pdf)
+- [2017] [Visual Search at Pinterest](https://arxiv.org/pdf/1706.03154.pdf)
+- [2021] [Visual Search at Alibaba](https://arxiv.org/pdf/2102.04674.pdf)
+
 推荐的可解释性：
 - [2018] [Explainable Recommendation via Multi-Task Learning in Opinionated Text Data](https://arxiv.org/pdf/1806.03568.pdf)[【汉】](https://blog.csdn.net/TgqDT3gGaMdkHasLZv/article/details/84576762) 个性化推荐的可解释性，需要依赖用户对商品的评论信息进行训练。
 - [2018] [TEM: Tree-enhanced Embedding Model for Explainable Recommendation](http://staff.ustc.edu.cn/~hexn/papers/www18-tem.pdf)[【汉】](https://blog.csdn.net/qq_35771020/article/details/88722399)
@@ -399,13 +391,6 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
 - 模型训练学习bias，serv的时候去掉bias
   - 如: [Youtube推荐算法中的多任务模型和消偏](https://zhuanlan.zhihu.com/p/261170030)
 
-
-### 4.2.7. 调参
-
-[超参数搜索方法](#parameter-tuning)
-
-模型的自动调参工具(AutoML)：
-- [Ray Tune](https://zhuanlan.zhihu.com/p/364613087)
 
 ## 4.3. 策略优化
 
@@ -480,12 +465,35 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
 ## 5.5. 与其他模块的协同
 迁移学习。引入其他人口(如搜索)，其他app的用户信息。
 
-## 5.6. 自动化
-减少人工干预
+## 5.6. 自动化AutoML
+
+AutoML工具(2022-07-07更新star数):
+- 资料
+  - [windmaple/awesome-AutoML](https://github.com/windmaple/awesome-AutoML)
+    - [AutoML: Methods, Systems, Challenges (first book on AutoML)](https://www.automl.org/book/) automl的书
+      -  HPO 超参搜索
+         -  mode-free, 网格搜索，随机搜索，guide search 固定一个参数找到最优质然后训练下一个，进化算法(遗传算法、进化算法、粒子群优化)
+         -  bayesian优化，多保真度优化(就是先用少量子集去筛选各种参数，然后逐渐增加样本量)
+      -  meta-learning，元数据，用元数据学习参数空间特点如：参数重要性、参数间的相关性，任务之间的相似性。
+      -  NAS  neural architecture search，神经架构搜索。
+  - [AutoML的一些开源项目](https://zhuanlan.zhihu.com/p/93109455)
+- 超参搜索
+  - [21.2k] [ray-project/ray](https://github.com/ray-project/ray) 其中Tune是超参学习，RLlib是强化学习学习。
+    - [Ray Tune](https://zhuanlan.zhihu.com/p/364613087)
+  - [6.3k] [hyperopt/hyperopt](https://github.com/hyperopt/hyperopt)
+- 自动特征
+  - [6.5k] [blue-yonder/tsfresh](https://github.com/blue-yonder/tsfresh)  从时间序列自动提取特征
+  - [6.3k] [alteryx/featuretools](https://github.com/alteryx/featuretools) 自动特征工程开源库
+  - [2k] [scikit-learn-contrib/category_encoders](https://github.com/scikit-learn-contrib/category_encoders) 分类特征编码
+- automl框架
+  - [8.6k] [keras-team/autokeras](https://github.com/keras-team/autokeras)
+  - [8.6k] [EpistasisLab/tpot](https://github.com/EpistasisLab/tpot)
+  - [5.9k] [h2oai/h2o-3](https://github.com/h2oai/h2o-3)
 
 
-# 6. 参考资料
+# 6. 学习资源
 
 - [zhaozhiyong19890102/Recommender-System](https://github.com/zhaozhiyong19890102/Recommender-System)
 - [shenweichen/AlgoNotes](https://github.com/shenweichen/AlgoNotes)
 - [jihoo-kim/awesome-RecSys](https://github.com/jihoo-kim/awesome-RecSys)
+- [fun-rec](https://github.com/datawhalechina/fun-rec) 推荐系统入门教程
