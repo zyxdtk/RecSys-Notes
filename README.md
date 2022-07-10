@@ -227,17 +227,6 @@
 - 批量特征
 - 实时特征
 
-特征的计算框架
-- 批量 
-  - Hive
-  - Spark 
-    -  [sparkInternals](https://github.com/JerryLead/SparkInternals/tree/master/markdown) github上的一个讲spark原理的项目，强烈推荐
-    -  [Spark Overview](http://spark.apache.org/docs/latest/) spark官方文档，太多了，偶尔看看
-    -  [Spark的使用及源码走读](http://www.cnblogs.com/hseagle/category/569175.html) 牛人的spark笔记，mark，还没看
-    -  [Tuning Spark](https://spark.apache.org/docs/latest/tuning.html)
-- 实时 
-  - Storm
-  - Flink 
 
 内容理解。通过NLP和CV的能力，给视频、图片的自动打标。做好场景识别、人脸识别、OCR、文本的关键词提取等。
 NLP相关：
@@ -470,12 +459,13 @@ label埋点日志关联，可以在客户端关联，也可以在大数据这里
 AutoML工具(2022-07-07更新star数):
 - 资料
   - [windmaple/awesome-AutoML](https://github.com/windmaple/awesome-AutoML)
-    - [AutoML: Methods, Systems, Challenges (first book on AutoML)](https://www.automl.org/book/) automl的书
+    - [AutoML: Methods, Systems, Challenges (first book on AutoML)](https://www.automl.org/book/) automl的书2019年出版
       -  HPO 超参搜索
          -  mode-free, 网格搜索，随机搜索，guide search 固定一个参数找到最优质然后训练下一个，进化算法(遗传算法、进化算法、粒子群优化)
          -  bayesian优化，多保真度优化(就是先用少量子集去筛选各种参数，然后逐渐增加样本量)
       -  meta-learning，元数据，用元数据学习参数空间特点如：参数重要性、参数间的相关性，任务之间的相似性。
-      -  NAS  neural architecture search，神经架构搜索。
+         - 从之前的模型学习。迁移学习、NN里的元学习、few-shot learning、
+      -  NAS  neural architecture search，神经架构搜索。搜索空间、搜索策略、性能评估。
   - [AutoML的一些开源项目](https://zhuanlan.zhihu.com/p/93109455)
 - 超参搜索
   - [21.2k] [ray-project/ray](https://github.com/ray-project/ray) 其中Tune是超参学习，RLlib是强化学习学习。
