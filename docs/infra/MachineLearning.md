@@ -14,7 +14,7 @@
   - [4.1. 参数是否可以初始化为0](#41-参数是否可以初始化为0)
   - [4.2. relu](#42-relu)
   - [4.3. 梯度消失和梯度膨胀](#43-梯度消失和梯度膨胀)
-- [5. CNN && CV](#5-cnn--cv)
+- [5. CNN \&\& CV](#5-cnn--cv)
   - [5.1. CNN适合处理什么问题](#51-cnn适合处理什么问题)
   - [5.2. CNN为什么具有平移不变性](#52-cnn为什么具有平移不变性)
   - [5.3. Pooling操作是什么？有几种？作用是什么？](#53-pooling操作是什么有几种作用是什么)
@@ -22,13 +22,15 @@
   - [5.5. 卷积](#55-卷积)
   - [5.6. 怎么看CNN的每个神经元都学到了什么。](#56-怎么看cnn的每个神经元都学到了什么)
   - [5.7. Resnet skip-connection](#57-resnet-skip-connection)
-- [6. RNN&&NLP](#6-rnnnlp)
+- [6. RNN\&\&NLP](#6-rnnnlp)
   - [6.1. RNN原理？RNN适合解决什么类型问题？为什么？](#61-rnn原理rnn适合解决什么类型问题为什么)
   - [6.2. LSTM如何实现长短期记忆功能？](#62-lstm如何实现长短期记忆功能)
   - [6.3. GRU跟LSTM有什么异同](#63-gru跟lstm有什么异同)
   - [6.4. RNN的长期以来问题是什么？怎么解决](#64-rnn的长期以来问题是什么怎么解决)
   - [6.5. Seq2Seq模型](#65-seq2seq模型)
 - [7. 强化学习](#7-强化学习)
+  - [7.1. 学习资源](#71-学习资源)
+  - [7.2. 基础概念](#72-基础概念)
 - [8. 参考资料](#8-参考资料)
 
 # 2. 基础问题
@@ -37,17 +39,17 @@
 过拟合：训练集效果好，测试机效果差。
 
 - 欠拟合
-  - 增加特征
-  - 增加模型复杂度
-  - 减少正则项稀疏
+    - 增加特征
+    - 增加模型复杂度
+    - 减少正则项稀疏
 - 过拟合
-  - 提高样本量
-  - 简化模型
-  - 加入正则项或提高惩罚稀疏
-  - 是用集成学习
-  - dropout
-  - early stopping
-  - [label smoothing(标签平滑)](https://blog.csdn.net/qq_40176087/article/details/121519888) 避免模型过于自信,让标签不绝对
+    - 提高样本量
+    - 简化模型
+    - 加入正则项或提高惩罚稀疏
+    - 是用集成学习
+    - dropout
+    - early stopping
+    - [label smoothing(标签平滑)](https://blog.csdn.net/qq_40176087/article/details/121519888) 避免模型过于自信,让标签不绝对
 
 ## 2.2. 正则化
 - 数据增强
@@ -63,8 +65,8 @@
 - AUC取值一般在0.5到1之间
 - AUC更关注序，对于样本不均衡情况，也能给出合理的评价
 - 有几种计算方式
-  - 计算ROC曲线下的面积。只能用近似方法去算。
-  - 统计逆序对个数。按照pred升序排列。得到正样本的rank累计值R。 (R-M(M-1)/2)/(M*N)。这里M是正样本个数，N是负样本个数。分母是正负样本对的个数，分子是逆序对的个数。
+    - 计算ROC曲线下的面积。只能用近似方法去算。
+    - 统计逆序对个数。按照pred升序排列。得到正样本的rank累计值R。 (R-M(M-1)/2)/(M*N)。这里M是正样本个数，N是负样本个数。分母是正负样本对的个数，分子是逆序对的个数。
 
 ## 2.4. 超参搜索
 
@@ -73,12 +75,12 @@
 - 网格搜索(Grid Search)，先用较大步长在较大范围搜索，确定可能的位置，然后逐渐缩小搜索范围和步长。简单有效，但是耗时久，目标函数非凸时容易miss全局最优。
 - 随机搜索(Random Search)，在搜索范围内随机选取样本点，样本集足够大也能找到全局最优或者近似解。优点是快，但是也可能miss全局最优。
 - 贝叶斯优化，对目标函数的形状进行学习，找到使目标函数向全局最优值提升的参数。优点是充分利用之前的信息。缺点是容易陷入局部最优。
-  - [SMBO](https://zhuanlan.zhihu.com/p/53826787)(Sequential model-based optimization)
+    - [SMBO](https://zhuanlan.zhihu.com/p/53826787)(Sequential model-based optimization)
 - 进化算法
-  - 基础理论：[帕累托最优](https://zhuanlan.zhihu.com/p/54691447) 
-  - [CEM](https://blog.csdn.net/ppp8300885/article/details/80567682)(Cross Entropy Method)
-  - [PSO](https://cloud.tencent.com/developer/article/1424756)(Particle Swarm Optimization, 粒子群算法)
-  - [NES](https://mofanpy.com/tutorials/machine-learning/evolutionary-algorithm/evolution-strategy-natural-evolution-strategy/)(Natural Evolution Strategy)
+    - 基础理论：[帕累托最优](https://zhuanlan.zhihu.com/p/54691447) 
+    - [CEM](https://blog.csdn.net/ppp8300885/article/details/80567682)(Cross Entropy Method)
+    - [PSO](https://cloud.tencent.com/developer/article/1424756)(Particle Swarm Optimization, 粒子群算法)
+    - [NES](https://mofanpy.com/tutorials/machine-learning/evolutionary-algorithm/evolution-strategy-natural-evolution-strategy/)(Natural Evolution Strategy)
 
 ## 2.5. PCA和LDA
 
@@ -100,9 +102,9 @@ PCA无监督，基于方差降维，去除冗余维度。LDA有监督，类内�
 
 不同：
 - xgboost是level-wise，lightgbm使用leaf-wise，这个可以提升训练速度。但是其实xgboost已经支持leaf-wise
-  - leaf-wise的问题是可能忽略未来有潜力的节点
+    - leaf-wise的问题是可能忽略未来有潜力的节点
 - xgboost单机默认是exact greedy，搜索所有的可能分割点。分布式是dynamic histogram，每一轮迭代重新estimate 潜在split candidate。LightGBM和最近的FastBDT都采取了提前histogram binning再在bin好的数据上面进行搜索。在限定好candidate splits。lightgbm在pre-bin之后的histogram的求和用了一个非常巧妙的减法trick，省了一半的时间。
-  - 提前限定分割点然后快速求histogram的方法，实际影响不确定。理论上树越深，需要的潜在分割点越多，可能需要动态训练来更新潜在分割点
+    - 提前限定分割点然后快速求histogram的方法，实际影响不确定。理论上树越深，需要的潜在分割点越多，可能需要动态训练来更新潜在分割点
 - xgboost主要是特征并行，lightgbm是有数据并行、特征并行、投票并行。当时其实xgboost也支持数据并行了。
 - lightgbm支持分类特征的many vs many，用G/H排序，然后再分桶
 参考：
@@ -126,16 +128,16 @@ PCA无监督，基于方差降维，去除冗余维度。LDA有监督，类内�
 - y=max(0,x)
 - relu在0处是不可导的，TensorFlow实现默认0点的导数为0
 - relu是非饱和激活函数。sigmoid和tanh是饱和激活函数。
-  - relu的优势：
-    - 非饱和激活函数可以解决梯度消失问题，提供相对宽的激活边界
-    - 能加快收敛速度
-    - 单次抑制提供了稀疏表达能力，防止过拟合
-  - 缺点
-    - 训练很脆弱，很容易权重就为0了，也就是神经元死亡
+    - relu的优势：
+      - 非饱和激活函数可以解决梯度消失问题，提供相对宽的激活边界
+      - 能加快收敛速度
+      - 单次抑制提供了稀疏表达能力，防止过拟合
+    - 缺点
+      - 训练很脆弱，很容易权重就为0了，也就是神经元死亡
 - relu变种
-  - Leaky Relu 给所有负值一个非零斜率
-  - [PRelu](https://blog.csdn.net/shuzfan/article/details/51345832) 是Leaky Relu的一个变体，负值部分的斜率是根据数据来定的。斜率a是用带动量的更新方式。论文中初始值0.25，动量= 动量系数*动量+学习率*偏导
-  - RRelu 也是Leaky Relu的一个变体，负值斜率在训练中是随机的，在测试中变成固定值。权重a是一个均匀分布U(l,u) l,u∈[0,1) 
+    - Leaky Relu 给所有负值一个非零斜率
+    - [PRelu](https://blog.csdn.net/shuzfan/article/details/51345832) 是Leaky Relu的一个变体，负值部分的斜率是根据数据来定的。斜率a是用带动量的更新方式。论文中初始值0.25，动量= 动量系数*动量+学习率*偏导
+    - RRelu 也是Leaky Relu的一个变体，负值斜率在训练中是随机的，在测试中变成固定值。权重a是一个均匀分布U(l,u) l,u∈[0,1) 
 
 参考：[激活函数ReLU、Leaky ReLU、PReLU和RReLU](https://blog.csdn.net/qq_23304241/article/details/80300149)
 
@@ -195,14 +197,14 @@ LSTM参数数量？若输入的长度=m,隐藏层的长度=n，则一个LSTM层�
 
 ## 6.3. GRU跟LSTM有什么异同
 相同点：
-  - 都有门
-  - 遗忘门或者更新门选择不更新memeory，网络会一直记住之前的重要特征。
+    - 都有门
+    - 遗忘门或者更新门选择不更新memeory，网络会一直记住之前的重要特征。
 - 不同
-  - GRU比LSTM比少了一个门。将遗忘门和输入门合成了一个单一的更新门
-  - GRU不区分长期记忆和短期记忆了
-  - LSTM有一个输出门控制memory的曝光程度，GRU是直接输出
-  - GRU通过重置门来控制从H(t-1)中得到的信息粒度，LSTM是直接输入。
-  - 相同参数量，GRU比LSTM表现稍好
+    - GRU比LSTM比少了一个门。将遗忘门和输入门合成了一个单一的更新门
+    - GRU不区分长期记忆和短期记忆了
+    - LSTM有一个输出门控制memory的曝光程度，GRU是直接输出
+    - GRU通过重置门来控制从H(t-1)中得到的信息粒度，LSTM是直接输入。
+    - 相同参数量，GRU比LSTM表现稍好
 参考：[门控循环单元（GRU）](https://zh.d2l.ai/chapter_recurrent-modern/gru.html#)
 
 ## 6.4. RNN的长期以来问题是什么？怎么解决
@@ -210,16 +212,37 @@ LSTM参数数量？若输入的长度=m,隐藏层的长度=n，则一个LSTM层�
 
 解决方法：
 梯度爆炸：权重矩阵连乘，特征值幅度大于1，于是指数级增长，加tanh可以缓解
-  - 梯度截断 
+    - 梯度截断 
 梯度消失：权重矩阵连乘，特征幅度小于0，于是衰减到0
-  - LSTM、GRU等模型加入门控机制，捕捉长期记忆，很大程度上弥补了梯度消失
-  - 残差结构
-  - 设计多个时间尺度的模型：在细粒度的时间尺度上处理近期信息、在粗粒度时间尺度上处理远期的信息。得到粗粒度时间尺度方法1跳跃链接：增加从远期的隐变量到当前隐变量的直接连接；2. 是删除连接：主动删除时间跨度为 1 的连接，并用更长的连接替换。
+    - LSTM、GRU等模型加入门控机制，捕捉长期记忆，很大程度上弥补了梯度消失
+    - 残差结构
+    - 设计多个时间尺度的模型：在细粒度的时间尺度上处理近期信息、在粗粒度时间尺度上处理远期的信息。得到粗粒度时间尺度方法1跳跃链接：增加从远期的隐变量到当前隐变量的直接连接；2. 是删除连接：主动删除时间跨度为 1 的连接，并用更长的连接替换。
 
 ## 6.5. Seq2Seq模型 
 seq2seq模型是将一个序列信号，通过编码和解码生成一个新的序列信号，输入和输出序列的长度实现并不知道。seq2seq的模型的核心思想由编码输入和解码输出两个环节构成。在经典的实现中，编码器和解码器各由一个循环神经网络构成，两个循环神经网络是共同训练的。
 
 # 7. 强化学习
+
+## 7.1. 学习资源
+- [Spinning Up in Deep RL](https://spinningup.openai.com/en/latest/)
+    - [Key Papers in Deep RL](https://spinningup.openai.com/en/latest/spinningup/keypapers.html)
+- [huggingface: deep-rl-course](https://huggingface.co/learn/deep-rl-course/unit0/introduction)
+
+
+## 7.2. 基础概念
+
+
+- [2018.02] [Addressing Function Approximation Error in Actor-Critic Methods](https://arxiv.org/abs/1802.09477) TD3,解决DDPG的Q函数高估导致的policy更新奔溃的问题。用到了double Q-learning截断、延迟policy更新、target policy smoothing。off-policy。
+- [2018.01] [Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor](https://arxiv.org/abs/1801.01290) SAC
+- [2017.07] [Emergence of Locomotion Behaviours in Rich Environments](https://arxiv.org/abs/1707.02286)
+- [2017.07] [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347) PPO主要是引入了clip
+- [2015.09] [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971) DDPG同时优化q函数和策略函数，off-policy,连续动作空间。
+    - [贝尔曼方程（Bellman equation）](https://blog.csdn.net/qq_39160779/article/details/107289652)
+    - off-policy挑战：分布偏移、探索不足、过时策略数据
+- [2015.06] [High-Dimensional Continuous Control Using Generalized Advantage Estimation](https://arxiv.org/abs/1506.02438) GAE平衡优势函数估计中的偏差和方差的方法
+- [2015.02] [Trust Region Policy Optimization](https://arxiv.org/abs/1502.05477) TRPO添加了KL散度约束
+- [2014.07] [Deterministic Policy Gradient Algorithms](https://proceedings.mlr.press/v32/silver14.pdf) DPG
+
 
 
 # 8. 参考资料

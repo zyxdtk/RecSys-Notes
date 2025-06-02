@@ -1,0 +1,7 @@
+site_name: 推荐系统笔记
+theme: readthedocs
+markdown_extensions:
+  - toc:
+      permalink: "#"
+      baselevel: 2
+      separator: "_"
